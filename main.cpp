@@ -3,42 +3,59 @@
 #include <cstdio>
 #include <ctime>
 #include <vector>
+#include <iterator>
 using namespace std;
 
-//сортировка пузырьком std::vector<int> &vec
-void bubble_sort(std::vector<int> &vec){
-    for(int i=0;i<vec.size();i++){
-        for(int j=0;j<vec.size()-1;j++){
-            if(vec[j]>vec[j+1]){
+//функция высчитывающая количество элементв между двумя итераторами
+int count_between_iter(vector<int>::iterator left, vector<int>::iterator right){
+    int count=0;
+    for(auto i=left;i<right;i++){
+        count++;
+    }
+    return count;
+}
+//сортировка пузырьком std::vector<int> &vec c использованием итераторов
+void bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right) {
+    int count = 0;
+    int copy = 0;
+    for (int i = *left; i < count_between_iter(left, right); i++) {
+        for (int j = 0; j < count_between_iter(left, right) - 1; j++) {
+            if (vec[j] > vec[j + 1]) {
                 int tmp = vec[j];
-                vec[j] = vec[j+1];
-                vec[j+1] = tmp;
+                vec[j] = vec[j + 1];
+                vec[j + 1] = tmp;
+                copy++;
             }
+            count++;
         }
     }
+    cout << "Количество сравнений: " << count << endl;
+    cout << "Количество копирований: " << copy << endl;
+}
+//функция возвращающая итератор на самое левое число в векторе std::vector<int>
+std::vector<int>::iterator left_v(std::vector<int> &vec){
+    return vec.begin();
 }
 
-//функция возвращающая самое левое число в векторе std::vector<int> &vec
-int left_v(std::vector<int> &vec){
-    return vec[0];
+//функция возвращающий итератор на самое правое число в векторе std::vector<int>
+std::vector<int>::iterator right_v(std::vector<int> &vec){
+    return vec.end();
 }
 
-//функция возвращающая самое правое число в векторе std::vector<int>
-int right_v(std::vector<int> &vec){
-    return vec[vec.size()-1];
-}
 
 // быстрая сортировка std::vector<int>
-void quick_sort(std::vector<int> &vec, int left, int right){
+void quick_sort_count(std::vector<int> &vec, int left, int right, int &count, int &copy){
     int i = left;
     int j = right;
     int pivot = vec[(left+right)/2];
     while(i<=j){
         while(vec[i]<pivot){
             i++;
+            count++;
         }
         while(vec[j]>pivot){
             j--;
+            count++;
         }
         if(i<=j){
             int tmp = vec[i];
@@ -46,13 +63,14 @@ void quick_sort(std::vector<int> &vec, int left, int right){
             vec[j] = tmp;
             i++;
             j--;
+            copy++;
         }
     }
     if(left<j){
-        quick_sort(vec,left,j);
+        quick_sort_count(vec,left,j,count,copy);
     }
     if(i<right){
-        quick_sort(vec,i,right);
+        quick_sort_count(vec,i,right,count,copy);
     }
 }
 // наибольший элемент в векторе std::vector<int>
