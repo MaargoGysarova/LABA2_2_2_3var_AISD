@@ -16,6 +16,7 @@ void bubble_sort(std::vector<int> &vec){
         }
     }
 }
+
 //функция возвращающая самое левое число в векторе std::vector<int> &vec
 int left_v(std::vector<int> &vec){
     return vec[0];
