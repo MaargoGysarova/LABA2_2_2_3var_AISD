@@ -6,6 +6,15 @@
 #include <iterator>
 using namespace std;
 
+struct stats{
+    int count;
+    int copy;
+    stats(){
+        count=0;
+        copy=0;
+    }
+};
+
 //функция высчитывающая количество элементв между двумя итераторами
 int count_between_iter(vector<int>::iterator left, vector<int>::iterator right){
     int count=0;
@@ -15,7 +24,8 @@ int count_between_iter(vector<int>::iterator left, vector<int>::iterator right){
     return count;
 }
 //сортировка пузырьком std::vector<int> &vec c использованием итераторов
-void bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right) {
+stats bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right) {
+    stats stat;
     int count = 0;
     int copy = 0;
     for (int i = *left; i < count_between_iter(left, right); i++) {
@@ -29,8 +39,9 @@ void bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vector
             count++;
         }
     }
-    cout << "Количество сравнений: " << count << endl;
-    cout << "Количество копирований: " << copy << endl;
+    stat.count = count;
+    stat.copy = copy;
+    return stat;
 }
 //функция возвращающая итератор на самое левое число в векторе std::vector<int>
 std::vector<int>::iterator left_v(std::vector<int> &vec){
@@ -44,7 +55,8 @@ std::vector<int>::iterator right_v(std::vector<int> &vec){
 
 
 // быстрая сортировка std::vector<int>
-void quick_sort_count(std::vector<int> &vec, int left, int right, int &count, int &copy){
+stats quick_sort_count(std::vector<int> &vec, int left, int right, int &count, int &copy){
+    stats stat;
     int i = left;
     int j = right;
     int pivot = vec[(left+right)/2];
@@ -72,6 +84,9 @@ void quick_sort_count(std::vector<int> &vec, int left, int right, int &count, in
     if(i<right){
         quick_sort_count(vec,i,right,count,copy);
     }
+    stat.count = count;
+    stat.copy = copy;
+    return stat;
 }
 // наибольший элемент в векторе std::vector<int>
 int max_v(std::vector<int> &vec){
@@ -103,7 +118,7 @@ void heapify(std::vector<int> &vec, int n, int i){
     }
 }
 //пирамидальная сортировка std::vector<int>
-void heap_sort(std::vector<int> &vec){
+stats heap_sort(std::vector<int> &vec){
     int n = vec.size();
     for(int i=n/2-1;i>=0;i--){
         heapify(vec,n,i);
@@ -114,6 +129,10 @@ void heap_sort(std::vector<int> &vec){
         vec[i] = tmp;
         heapify(vec,i,0);
     }
+    stats stat;
+    stat.count = 0;
+    stat.copy = 0;
+    return stat;
 }
 
 void printArray(int arr[], int n)
@@ -122,3 +141,4 @@ void printArray(int arr[], int n)
         cout << arr[i] << " ";
     cout << "\n";
 }
+
