@@ -3,4 +3,4 @@ project(LABA2_2_2_3var_AISD)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(LABA2_2_2_3var_AISD main.cpp)
+add_executable(LABA2_2_2_3var_AISD main.cpp experiments.cpp)

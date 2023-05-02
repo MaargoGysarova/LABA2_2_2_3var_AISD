@@ -9,9 +9,11 @@ using namespace std;
 struct stats{
     int count;
     int copy;
+    double time;
     stats(){
         count=0;
         copy=0;
+        time=0;
     }
 };
 
@@ -28,6 +30,8 @@ stats bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vecto
     stats stat;
     int count = 0;
     int copy = 0;
+    //начало отсчета времени
+    clock_t start = clock();
     for (int i = *left; i < count_between_iter(left, right); i++) {
         for (int j = 0; j < count_between_iter(left, right) - 1; j++) {
             if (vec[j] > vec[j + 1]) {
@@ -39,8 +43,11 @@ stats bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vecto
             count++;
         }
     }
+    //конец отсчета времени
+    clock_t end = clock();
     stat.count = count;
     stat.copy = copy;
+    stat.time = (double) (end - start) / CLOCKS_PER_SEC;
     return stat;
 }
 //функция возвращающая итератор на самое левое число в векторе std::vector<int>
@@ -60,6 +67,8 @@ stats quick_sort_count(std::vector<int> &vec, int left, int right, int &count, i
     int i = left;
     int j = right;
     int pivot = vec[(left+right)/2];
+    //начало отсчета времени
+    clock_t start = clock();
     while(i<=j){
         while(vec[i]<pivot){
             i++;
@@ -84,8 +93,11 @@ stats quick_sort_count(std::vector<int> &vec, int left, int right, int &count, i
     if(i<right){
         quick_sort_count(vec,i,right,count,copy);
     }
+    //конец отсчета времени
+    clock_t end = clock();
     stat.count = count;
     stat.copy = copy;
+    stat.time = (double) (end - start) / CLOCKS_PER_SEC;
     return stat;
 }
 // наибольший элемент в векторе std::vector<int>
@@ -120,6 +132,8 @@ void heapify(std::vector<int> &vec, int n, int i){
 //пирамидальная сортировка std::vector<int>
 stats heap_sort(std::vector<int> &vec){
     int n = vec.size();
+    //начало отсчета времени
+    clock_t start = clock();
     for(int i=n/2-1;i>=0;i--){
         heapify(vec,n,i);
     }
@@ -129,9 +143,12 @@ stats heap_sort(std::vector<int> &vec){
         vec[i] = tmp;
         heapify(vec,i,0);
     }
+    //конец отсчета времени
+    clock_t end = clock();
     stats stat;
     stat.count = 0;
     stat.copy = 0;
+    stat.time = (double) (end - start) / CLOCKS_PER_SEC;
     return stat;
 }
 
