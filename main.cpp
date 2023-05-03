@@ -26,7 +26,7 @@ int count_between_iter(vector<int>::iterator left, vector<int>::iterator right){
     return count;
 }
 //сортировка пузырьком std::vector<int> &vec c использованием итераторов
-stats bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right) {
+stats bubble_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right) {
     stats stat;
     int count = 0;
     int copy = 0;
@@ -51,18 +51,27 @@ stats bubble_sort_count(std::vector<int> &vec, vector<int>::iterator left, vecto
     return stat;
 }
 //функция возвращающая итератор на самое левое число в векторе std::vector<int>
-std::vector<int>::iterator left_v(std::vector<int> &vec){
+std::vector<int>::iterator left_v(vector<int> &vec){
     return vec.begin();
 }
 
 //функция возвращающий итератор на самое правое число в векторе std::vector<int>
-std::vector<int>::iterator right_v(std::vector<int> &vec){
+std::vector<int>::iterator right_v(vector<int> &vec){
     return vec.end();
 }
 
+//функция возвращающая самое левое число в векторе std::vector<int>
+int left_v_int(vector<int> &vec){
+    return *vec.begin();
+}
+
+//функция возвращающая самое правое число в векторе std::vector<int>
+int right_v_int(vector<int> &vec){
+    return *vec.end();
+}
 
 // быстрая сортировка std::vector<int>
-stats quick_sort_count(std::vector<int> &vec, int left, int right, int &count, int &copy){
+stats quick_sort_count(vector<int> &vec, int left, int right, int &count, int &copy){
     stats stat;
     int i = left;
     int j = right;
@@ -157,5 +166,28 @@ void printArray(int arr[], int n)
     for (int i=0; i<n; ++i)
         cout << arr[i] << " ";
     cout << "\n";
+}
+
+void exp(int size){
+    vector<int> vec;
+    int count = 0;
+    int copy = 0;
+    for(int i=0;i<size;i++){
+        vec.push_back(rand()%100);
+    }
+    vector<int> vec1 = vec;
+    vector<int> vec2 = vec;
+    vector<int> vec3 = vec;
+    stats stat1 = bubble_sort_count(vec1,left_v(vec1),right_v(vec1));
+    stats stat2 = quick_sort_count(vec2,left_v_int(vec2),right_v_int(vec2),count,copy);
+    stats stat3 = heap_sort(vec3);
+    //запись в файл данных о сортировке stats
+    FILE *file;
+    char file_name[20];
+    sprintf(file_name,"stats %d.txt",size);
+    file = fopen(file_name,"a");
+    fprintf(file,"bubble_sort_count: %d %d %f\n",stat1.count,stat1.copy,stat1.time);
+    fprintf(file,"quick_sort_count: %d %d %f\n",stat2.count,stat2.copy,stat2.time);
+    fprintf(file,"heap_sort: %d %d %f\n",stat3.count,stat3.copy,stat3.time);
 }
 
