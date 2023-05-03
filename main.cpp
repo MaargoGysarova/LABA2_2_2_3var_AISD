@@ -32,8 +32,8 @@ stats bubble_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int
     int copy = 0;
     //начало отсчета времени
     clock_t start = clock();
-    for (int i = *left; i < count_between_iter(left, right); i++) {
-        for (int j = 0; j < count_between_iter(left, right) - 1; j++) {
+    for (int i = 0; i < count_between_iter(left, right)+1; i++) {
+        for (int j = 0; j < count_between_iter(left, right); j++) {
             if (vec[j] > vec[j + 1]) {
                 int tmp = vec[j];
                 vec[j] = vec[j + 1];
@@ -57,7 +57,7 @@ std::vector<int>::iterator left_v(vector<int> &vec){
 
 //функция возвращающий итератор на самое правое число в векторе std::vector<int>
 std::vector<int>::iterator right_v(vector<int> &vec){
-    return vec.end();
+    return vec.end()-1;
 }
 
 //функция возвращающая самое левое число в векторе std::vector<int>
@@ -67,48 +67,64 @@ int left_v_int(vector<int> &vec){
 
 //функция возвращающая самое правое число в векторе std::vector<int>
 int right_v_int(vector<int> &vec){
-    return *vec.end();
+    //указатель на последний элемент вектора
+    auto it = vec.end()-1;
+    return *it;
 }
 
-// быстрая сортировка std::vector<int>
-stats quick_sort_count(vector<int> &vec, int left, int right, int &count, int &copy){
+// быстрая сортировка std::vector<int> c  использованием итераторов с подсчетом количества операций и копирований
+stats quick_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right, int &flag, int &count, int &copy){
     stats stat;
-    int i = left;
-    int j = right;
-    int pivot = vec[(left+right)/2];
+    count = 0;
+    copy = 0;
+    flag += 1;
     //начало отсчета времени
     clock_t start = clock();
-    while(i<=j){
-        while(vec[i]<pivot){
-            i++;
+    //указатель на первый элемент вектора
+    auto it_left = left;
+    //указатель на последний элемент вектора
+    auto it_right = right;
+    //указатель на середину вектора
+    auto it_middle = left + (right - left) / 2+1;
+    //выбор опорного элемента
+    int pivot = *it_middle;
+    //разделение вектора на две части
+    while (it_left <= it_right) {
+        while (*it_left < pivot) {
+            it_left++;
             count++;
         }
-        while(vec[j]>pivot){
-            j--;
+        while (*it_right > pivot) {
+            it_right--;
             count++;
         }
-        if(i<=j){
-            int tmp = vec[i];
-            vec[i] = vec[j];
-            vec[j] = tmp;
-            i++;
-            j--;
+        if (it_left <= it_right) {
+            int tmp = *it_left;
+            *it_left = *it_right;
+            *it_right = tmp;
+            it_left++;
+            it_right--;
             copy++;
         }
     }
-    if(left<j){
-        quick_sort_count(vec,left,j,count,copy);
+    //рекурсивные вызовы, если есть, что сортировать
+    if (left < it_right) {
+        quick_sort_count(vec, left, it_right, flag, count, copy);
     }
-    if(i<right){
-        quick_sort_count(vec,i,right,count,copy);
+    if (it_left < right) {
+        quick_sort_count(vec, it_left, right, flag, count, copy);
     }
     //конец отсчета времени
-    clock_t end = clock();
-    stat.count = count;
-    stat.copy = copy;
-    stat.time = (double) (end - start) / CLOCKS_PER_SEC;
-    return stat;
+
+        clock_t end = clock();
+        stat.count = count;
+        stat.copy = copy;
+        stat.time = (double) (end - start) / CLOCKS_PER_SEC;
+        return stat;
+
 }
+
+
 // наибольший элемент в векторе std::vector<int>
 int max_v(std::vector<int> &vec){
     int max = vec[0];
@@ -168,26 +184,65 @@ void printArray(int arr[], int n)
     cout << "\n";
 }
 
+//вывод вектора std::vector<int>
+void printVector(vector<int> &vec,char *str){
+    cout << str << endl;
+    for(int i : vec){
+        cout << i << " ";
+    }
+    cout << endl;
+}
+//функция для сортировки в обратном порядке vector<int>
+vector<int> reverse(vector<int> &vec){
+    vector<int> vec_reverse;
+    for(int i=vec.size()-1;i>=0;i--){
+        vec_reverse.push_back(vec[i]);
+    }
+    return vec_reverse;
+}
+
 void exp(int size){
     vector<int> vec;
     int count = 0;
     int copy = 0;
+    int flag = 0;
     for(int i=0;i<size;i++){
         vec.push_back(rand()%100);
     }
-    vector<int> vec1 = vec;
-    vector<int> vec2 = vec;
-    vector<int> vec3 = vec;
-    stats stat1 = bubble_sort_count(vec1,left_v(vec1),right_v(vec1));
-    stats stat2 = quick_sort_count(vec2,left_v_int(vec2),right_v_int(vec2),count,copy);
-    stats stat3 = heap_sort(vec3);
+    for(int m : vec){
+        cout << m << " ";
+    }
+    cout << endl;
+    vector<int> vec_bubl = vec;
+    vector<int> vec_quick = vec;
+    vector<int> vec_heap = vec;
+
+    stats stat1 = bubble_sort_count(vec_bubl,left_v(vec_bubl),right_v(vec_bubl));
+    printVector(vec_bubl,"bubble_sort");
+    stats stat2 = quick_sort_count(vec_quick,left_v(vec_quick),right_v(vec_quick) ,flag, count, copy);
+    printVector(vec_quick,"quick_sort");
+    stats stat3 = heap_sort(vec_heap);
+    printVector(vec_heap,"heap_sort");
+    vector<int> vec_bubl_back = reverse(vec_bubl);
+    printVector(vec_bubl_back,"bubble_sort_back_before_sort");
+    stats stat4 = bubble_sort_count(vec_bubl_back,left_v(vec_bubl_back),right_v(vec_bubl_back));
+    printVector(vec_bubl_back,"bubble_sort_back_after_sort");
+
     //запись в файл данных о сортировке stats
     FILE *file;
     char file_name[20];
     sprintf(file_name,"stats %d.txt",size);
     file = fopen(file_name,"a");
-    fprintf(file,"bubble_sort_count: %d %d %f\n",stat1.count,stat1.copy,stat1.time);
-    fprintf(file,"quick_sort_count: %d %d %f\n",stat2.count,stat2.copy,stat2.time);
-    fprintf(file,"heap_sort: %d %d %f\n",stat3.count,stat3.copy,stat3.time);
+    fprintf(file,"bubble_sort: count: %d copy: %d time: %f\n",stat1.count,stat1.copy,stat1.time);
+    fprintf(file,"quick_sort: count: %d copy: %d time: %f\n",stat2.count,stat2.copy,stat2.time);
+    fprintf(file,"heap_sort: count: %d copy: %d time: %f\n",stat3.count,stat3.copy,stat3.time);
+    fprintf(file,"bubble_sort_back: count: %d copy: %d time: %f\n",stat4.count,stat4.copy,stat4.time);
 }
 
+
+int main() {
+    srand(time(NULL));
+    int size = 10;
+    exp(size);
+    return 0;
+}
