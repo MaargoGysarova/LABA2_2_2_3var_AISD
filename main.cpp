@@ -73,11 +73,8 @@ int right_v_int(vector<int> &vec){
 }
 
 // быстрая сортировка std::vector<int> c  использованием итераторов с подсчетом количества операций и копирований
-stats quick_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right, int &flag, int &count, int &copy){
+stats quick_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int>::iterator right, int &count, int &copy){
     stats stat;
-    count = 0;
-    copy = 0;
-    flag += 1;
     //начало отсчета времени
     clock_t start = clock();
     //указатель на первый элемент вектора
@@ -109,10 +106,10 @@ stats quick_sort_count(vector<int> &vec, vector<int>::iterator left, vector<int>
     }
     //рекурсивные вызовы, если есть, что сортировать
     if (left < it_right) {
-        quick_sort_count(vec, left, it_right, flag, count, copy);
+        quick_sort_count(vec, left, it_right,  count, copy);
     }
     if (it_left < right) {
-        quick_sort_count(vec, it_left, right, flag, count, copy);
+        quick_sort_count(vec, it_left, right,  count, copy);
     }
     //конец отсчета времени
 
@@ -219,7 +216,7 @@ void exp(int size){
 
     stats stat1 = bubble_sort_count(vec_bubl,left_v(vec_bubl),right_v(vec_bubl));
     printVector(vec_bubl,"bubble_sort");
-    stats stat2 = quick_sort_count(vec_quick,left_v(vec_quick),right_v(vec_quick) ,flag, count, copy);
+    stats stat2 = quick_sort_count(vec_quick,left_v(vec_quick),right_v(vec_quick) , count, copy);
     printVector(vec_quick,"quick_sort");
     stats stat3 = heap_sort(vec_heap);
     printVector(vec_heap,"heap_sort");
@@ -230,9 +227,8 @@ void exp(int size){
 
     //запись в файл данных о сортировке stats
     FILE *file;
-    char file_name[20];
-    sprintf(file_name,"stats %d.txt",size);
-    file = fopen(file_name,"a");
+    file = fopen("stats.txt","a");
+    fprintf(file,"%d\n",size);
     fprintf(file,"bubble_sort: count: %d copy: %d time: %f\n",stat1.count,stat1.copy,stat1.time);
     fprintf(file,"quick_sort: count: %d copy: %d time: %f\n",stat2.count,stat2.copy,stat2.time);
     fprintf(file,"heap_sort: count: %d copy: %d time: %f\n",stat3.count,stat3.copy,stat3.time);
@@ -242,7 +238,86 @@ void exp(int size){
 
 int main() {
     srand(time(NULL));
-    int size = 10;
-    exp(size);
+    int loop;
+    cout << "Enter 1 to sort massive" << endl;
+    cout << "Enter 2 to make file with data-stats" << endl;
+    cin >> loop;
+    if(loop==2) {
+        exp(100);
+        //exp(2000);
+        //exp(3000);
+        //exp(4000);
+        //exp(5000);
+        //exp(6000);
+        //exp(7000);
+        // exp(8000);
+        // exp(9000);
+        // exp(10000);
+        //exp(25000);
+        // exp(50000);
+        // exp(100000);
+    }
+    if(loop==1){
+        int loop_sort;
+        int size=100;
+        vector<int> vec;
+        cout << "Enter 1 - bouble sort" << endl;
+        cout << "Enter 2 - quick sort" << endl;
+        cout << "Enter 3 - heap sort" << endl;
+        cin >> loop_sort;
+        if(loop_sort==1){
+            if(vec.empty()){
+            vec.clear();}
+            for(int i=0;i<size;i++){
+                vec.push_back(rand()%100);
+            }
+            cout<<"Исходный массив";
+            for(int m : vec){
+                cout << m << " ";
+            }
+            cout<< endl;
+            stats stat1 = bubble_sort_count(vec,left_v(vec),right_v(vec));
+            printVector(vec,"bubble_sort");
+            cout<<"Count: "<< stat1.count;
+            cout<< "Copy: "<<stat1.copy;
+            cout<<"time: "<< stat1.time;
+        }
+        if(loop_sort==2){
+            int count=0;
+            int copy=0;
+            if(vec.empty()){
+                vec.clear();}
+            for(int i=0;i<size;i++){
+                vec.push_back(rand()%100);
+            }
+            cout<<"Исходный массив\n";
+            for(int m : vec){
+                cout << m << " ";
+            }
+            cout<< endl;
+            stats stat2 = quick_sort_count(vec,left_v(vec),right_v(vec) , count, copy);
+            printVector(vec,"quick_sort");
+            cout<<"Count: "<< stat2.count;
+            cout<< "Copy: "<<stat2.copy;
+            cout<<"time: "<< stat2.time;
+        }
+        if(loop_sort==3){
+            if(vec.empty()){
+                vec.clear();}
+            for(int i=0;i<size;i++){
+                vec.push_back(rand()%100);
+            }
+            cout<<"Исходный массив\n";
+            for(int m : vec){
+                cout << m << " ";
+            }
+            cout<< endl;
+            stats stat3 = heap_sort(vec);
+            printVector(vec,"heap_sort");
+            cout<<"Count: "<< stat3.count;
+            cout<< "Copy: "<<stat3.copy;
+            cout<<"time: "<< stat3.time;
+        }
+    }
     return 0;
 }
