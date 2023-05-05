@@ -133,7 +133,7 @@ int max_v(std::vector<int> &vec){
     return max;
 }
 
-//функция для пирамидальной сортировки std::vector<int>
+//функция для пирамидальной сортировки std::vector<int> (1 этап)
 void heapify(std::vector<int> &vec, int n, int i){
     int largest = i; // Инициализируем наибольший элемент как корень
     int l = 2*i+1;
@@ -160,10 +160,10 @@ stats heap_sort(std::vector<int> &vec){
         heapify(vec,n,i);
     }
     for(int i=n-1;i>=0;i--){
-        int tmp = vec[0];
+        int tmp = vec[0]; // переносим последний элемент в конец
         vec[0] = vec[i];
         vec[i] = tmp;
-        heapify(vec,i,0);
+        heapify(vec,i,0); // заново первый этап
     }
     //конец отсчета времени
     clock_t end = clock();
@@ -278,9 +278,9 @@ int main() {
             cout<< endl;
             stats stat1 = bubble_sort_count(vec,left_v(vec),right_v(vec));
             printVector(vec,"bubble_sort");
-            cout<<"Count: "<< stat1.count;
-            cout<< "Copy: "<<stat1.copy;
-            cout<<"time: "<< stat1.time;
+            cout<<" Count: "<< stat1.count;
+            cout<< " Copy: "<<stat1.copy;
+            cout<<" time: "<< stat1.time;
         }
         if(loop_sort==2){
             int count=0;
@@ -297,9 +297,9 @@ int main() {
             cout<< endl;
             stats stat2 = quick_sort_count(vec,left_v(vec),right_v(vec) , count, copy);
             printVector(vec,"quick_sort");
-            cout<<"Count: "<< stat2.count;
+            cout<<" Count: "<< stat2.count;
             cout<< "Copy: "<<stat2.copy;
-            cout<<"time: "<< stat2.time;
+            cout<<" time: "<< stat2.time;
         }
         if(loop_sort==3){
             if(vec.empty()){
@@ -314,9 +314,9 @@ int main() {
             cout<< endl;
             stats stat3 = heap_sort(vec);
             printVector(vec,"heap_sort");
-            cout<<"Count: "<< stat3.count;
-            cout<< "Copy: "<<stat3.copy;
-            cout<<"time: "<< stat3.time;
+            cout<<" Count: "<< stat3.count;
+            cout<< " Copy: "<< stat3.copy;
+            cout<<" time: "<< stat3.time;
         }
     }
     return 0;
