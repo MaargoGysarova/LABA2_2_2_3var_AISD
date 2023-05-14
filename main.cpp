@@ -156,7 +156,7 @@ stats heap_sort(std::vector<int> &vec){
     int n = vec.size();
     //начало отсчета времени
     clock_t start = clock();
-    for(int i=n/2-1;i>=0;i--){
+    for(int i=n/2-1;i>=0;i--){ // проходим по всему уровню дочерних элементов и возвышаем самый большой элемент на уровень выше
         heapify(vec,n,i);
     }
     for(int i=n-1;i>=0;i--){
